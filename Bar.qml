@@ -1,6 +1,8 @@
 import Quickshell
 import Quickshell.Widgets
 import QtQuick
+import "components"
+import "config"
 
 Variants {
   model: Quickshell.screens;
@@ -8,14 +10,13 @@ Variants {
   PanelWindow {
     // the screen from screen list injected into property
     required property var modelData
-    property int margin: 10
 
     // set the window's screen tot he injected property
     screen: modelData
 
     color: "transparent"
 
-    implicitHeight: 35
+    implicitHeight: Config.barHeight
 
     anchors {
       top: true
@@ -24,11 +25,35 @@ Variants {
     }
 
     margins {
-      top: margin
-      right: margin
-      left: margin
+      top: Config.barMargin
+      right: Config.barMargin
+      left: Config.barMargin
     }
 
-    ClockWidget {}
+    Row {
+      id: left
+
+      anchors.left: parent.left
+    }
+
+    Row {
+      id: center
+
+      anchors.horizontalCenter: parent.horizontalCenter
+    }
+
+    Row {
+      id: right
+
+      layoutDirection: Qt.RightToLeft
+
+      height: Config.barHeight
+      width: content.width
+
+      spacing: Config.barMargin
+
+      anchors.right: parent.right
+      Clock {}
+    }
   }
 }

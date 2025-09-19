@@ -40,6 +40,8 @@ Variants {
       id: center
 
       anchors.horizontalCenter: parent.horizontalCenter
+
+      height: Config.barHeight
     }
 
     Row {
@@ -53,7 +55,11 @@ Variants {
       spacing: Config.barMargin
 
       anchors.right: parent.right
-      Clock {}
+      Clock {
+        bgCol: Colors.catCrust
+        fgCol: Colors.catLavender
+        text: Time.time
+      }
     }
   }
 }

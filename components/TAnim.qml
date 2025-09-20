@@ -7,6 +7,8 @@ SequentialAnimation {
   property string fadeProperty: "opacity"
   property int fadeDuration: 300
 
+  // I genuinely do not understand this but StackOverflow did so
+
   NumberAnimation {
     id: outAnimation
     target: root.target

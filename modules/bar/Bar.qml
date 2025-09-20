@@ -14,8 +14,11 @@ Variants {
     // set the window's screen tot he injected property
     screen: modelData
 
+    // make bg rectangle invisible because it looks rubbish
     color: "transparent"
 
+    // implicit height basically means real height because
+    // reasons ig
     implicitHeight: Config.barHeight
 
     anchors {
@@ -24,12 +27,14 @@ Variants {
       right: true
     }
 
+    // make sure the bar can't be infected by the bezels of my monitor
     margins {
       top: Config.barMargin
       right: Config.barMargin
       left: Config.barMargin
     }
 
+    // these rows are to make sure the elements are horizontal
     Row {
       id: left
 

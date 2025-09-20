@@ -3,6 +3,8 @@ pragma Singleton
 import Quickshell
 
 Singleton {
+  // I have stolen these. They are not mine.
+  // And I am not a furry. The cat means catppuccin
   property string catCrust: "#181926"
   property string catMauve: "#c6a0f6"
   property string catRed: "#ed8796"

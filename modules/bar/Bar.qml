@@ -1,8 +1,8 @@
+import "components"
+import qs.config
 import Quickshell
 import Quickshell.Widgets
 import QtQuick
-import "components"
-import "config"
 
 Variants {
   model: Quickshell.screens;
@@ -48,18 +48,12 @@ Variants {
       id: right
 
       layoutDirection: Qt.RightToLeft
-
       height: Config.barHeight
-      width: content.width
-
       spacing: Config.barMargin
-
       anchors.right: parent.right
-      Clock {
-        bgCol: Colors.catCrust
-        fgCol: Colors.catLavender
-        text: Time.time
-      }
+      
+      Power {}
+      Clock {}
     }
   }
 }

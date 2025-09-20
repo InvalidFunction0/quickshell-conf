@@ -1,5 +1,5 @@
 import Quickshell
-import "Bar.qml"
+import qs.modules.bar
 
 ShellRoot {
   Bar {}

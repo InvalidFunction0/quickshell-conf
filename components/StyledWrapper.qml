@@ -16,8 +16,8 @@ WrapperRectangle {
   anchors.top: parent.top
   anchors.bottom: parent.bottom
 
-  rightMargin: 15
-  leftMargin:  15
+  rightMargin: Config.textPadding
+  leftMargin:  Config.textPadding
 
   height: parent.height
 

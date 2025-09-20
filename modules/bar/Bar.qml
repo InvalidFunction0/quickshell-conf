@@ -33,7 +33,11 @@ Variants {
     Row {
       id: left
 
+      height: Config.barHeight
+      spacing: Config.barMargin
       anchors.left: parent.left
+
+      ActiveWindow {}
     }
 
     Row {

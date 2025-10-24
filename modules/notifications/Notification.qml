@@ -14,11 +14,11 @@ Rectangle {
 
     implicitWidth: Config.notifs.sizes.width
     implicitHeight: 75
-    radius: Appearance.rounding.normal
+    radius: Appearance.rounding.small
 
     color: Appearance.colors.crust
 
-    x: Config.notifs.sizes.width
+    // x: Config.notifs.sizes.width
 
     Component.onCompleted: x = 0
 
@@ -29,6 +29,9 @@ Rectangle {
     }
 
     Column {
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.leftMargin: 10
+
         StyledText {
             color: Appearance.colors.blue
             text: root.modelData.summary

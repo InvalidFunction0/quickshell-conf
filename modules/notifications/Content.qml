@@ -1,6 +1,5 @@
-import qs.services
 import qs.config
-import qs.components
+import qs.services
 import Quickshell
 import Quickshell.Widgets
 import QtQuick
@@ -8,56 +7,57 @@ import QtQuick
 Item {
     id: root
 
-    readonly property int padding: Appearance.padding.large
-
-    anchors {
-        topMargin: Config.bar.sizes.innerHeight + Appearance.padding.normal * 2
-        top: parent.top
-        right: parent.right
-    }
-
-    implicitWidth: Config.notifs.sizes.width + padding * 2
+    implicitWidth: Config.notifs.sizes.width + Appearance.padding.small * 2
     implicitHeight: {
         const count = Notifs.popups.length;
-        if (count === 0) {
-            return 0;
-        }
 
-        return 100;
+        if (count === 0)
+            return 0;
+
+        let height = (count - 1) * list.margin;
+        height += 2 * list.margin;
+
+        height += count * 75;
+
+        height;
+    }
+
+    anchors {
+        top: parent.top
+        right: parent.right
+        bottom: parent.bottom
     }
 
     ClippingWrapperRectangle {
+        color: Appearance.colors.mantle
         anchors.fill: parent
-        anchors.margins: root.padding
-
-        color: "transparent"
-        radius: Appearance.rounding.normal
+        radius: Appearance.rounding.small
 
         ListView {
+            id: list
+
+            readonly property int margin: Appearance.padding.small
+
             model: ScriptModel {
-                values: Notifs.popups.filter(n => n.popup) // the filter is just to please Qt
+                values: Notifs.popups.filter(n => n.popup)
             }
 
-            anchors.fill: parent
+            orientation: ListView.Vertical
 
-            orientation: Qt.Vertical
-            spacing: 0
-            cacheBuffer: QsWindow.window?.screen.height ?? 0
+            anchors.fill: parent
+            anchors.margins: margin
+
+            spacing: margin
 
             delegate: Item {
                 id: wrapper
 
                 required property Notifs.Notif modelData
-                required property int index
-                property int idx
 
-                onIndexChanged: {
-                    if (index !== -1)
-                        idx = index;
-                }
+                implicitHeight: content.height
 
-                implicitWidth: notif.implicitWidth
-                implicitHeight: notif.implicitHeight + (idx === 0 ? 0 : Appearance.spacing.small)
+                anchors.left: parent.left
+                anchors.right: parent.right
 
                 ListView.onRemove: removeAnim.start()
 
@@ -87,8 +87,9 @@ Item {
                     Anim {
                         target: notif
                         property: "x"
-                        to: (notif.x >= 0 ? 300 : -300) * 2
-                        duration: 300
+                        to: (notif.x >= 0 ? Config.notifs.sizes.width : -Config.notifs.sizes.width) * 2
+                        duration: Appearance.anim.durations.normal
+                        easing.bezierCurve: Appearance.anim.curves.emphasized
                     }
                     PropertyAction {
                         target: wrapper
@@ -107,20 +108,9 @@ Item {
 
                     Notification {
                         id: notif
+
                         modelData: wrapper.modelData
                     }
-                }
-            }
-
-            move: Transition {
-                Anim {
-                    property: "y"
-                }
-            }
-
-            displaced: Transition {
-                Anim {
-                    property: "y"
                 }
             }
         }
@@ -131,8 +121,8 @@ Item {
     }
 
     component Anim: NumberAnimation {
-        duration: 300
+        duration: Appearance.anim.durations.expressiveDefaultSpatial
         easing.type: Easing.BezierSpline
-        easing.bezierCurve: [0.38, 1.21, 0.22, 1, 1, 1]
+        easing.bezierCurve: Appearance.anim.curves.expressiveDefaultSpatial
     }
 }

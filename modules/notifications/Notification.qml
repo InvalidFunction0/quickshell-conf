@@ -5,6 +5,7 @@ import qs.config
 import qs.services
 import Quickshell
 import QtQuick
+import QtQuick.Layouts
 
 Rectangle {
     id: root
@@ -13,26 +14,29 @@ Rectangle {
 
     implicitWidth: Config.notifs.sizes.width
     implicitHeight: 75
-
-    color: "red"
     radius: Appearance.rounding.normal
+
+    color: Appearance.colors.crust
+
+    x: Config.notifs.sizes.width
 
     Component.onCompleted: x = 0
 
     Behavior on x {
-        Anim {}
+        Anim {
+            easing.bezierCurve: [0.05, 0.7, 0.1, 1, 1, 1]
+        }
     }
 
-    Item {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.margins: 10
-
-        implicitHeight: 75
-
+    Column {
         StyledText {
+            color: Appearance.colors.blue
             text: root.modelData.summary
+            height: implicitHeight
+        }
+        StyledText {
+            color: Appearance.colors.lavender
+            text: root.modelData.body
         }
     }
 }

@@ -1,12 +1,13 @@
 import qs.config
 import qs.components
+import qs.services
 import QtQuick
 import Quickshell.Io
 
 StyledWrapper {
     id: root
-    bg: Colors.catCrust
-    fg: Colors.catLavender
+    bg: Appearance.colors.crust
+    fg: Appearance.colors.lavender
 
     StyledText {
         centerText: true

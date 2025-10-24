@@ -8,18 +8,13 @@ Variants {
     model: Quickshell.screens
 
     PanelWindow {
-        // the screen from screen list injected into property
         required property var modelData
 
-        // set the window's screen tot he injected property
         screen: modelData
 
-        // make bg rectangle invisible because it looks rubbish
         color: "transparent"
 
-        // implicit height basically means real height because
-        // reasons ig
-        implicitHeight: Config.barHeight
+        implicitHeight: Config.bar.sizes.innerHeight
 
         anchors {
             top: true
@@ -29,17 +24,17 @@ Variants {
 
         // make sure the bar can't be infected by the bezels of my monitor
         margins {
-            top: Config.barMargin
-            right: Config.barMargin
-            left: Config.barMargin
+            top: Appearance.padding.normal
+            right: Appearance.padding.normal
+            left: Appearance.padding.normal
         }
 
         // these rows are to make sure the elements are horizontal
         Row {
             id: left
 
-            height: Config.barHeight
-            spacing: Config.barMargin
+            height: parent.height
+            spacing: Appearance.spacing.small
             anchors.left: parent.left
 
             ActiveWindow {}
@@ -50,15 +45,15 @@ Variants {
 
             anchors.horizontalCenter: parent.horizontalCenter
 
-            height: Config.barHeight
+            height: parent.height
         }
 
         Row {
             id: right
 
             layoutDirection: Qt.RightToLeft
-            height: Config.barHeight
-            spacing: Config.barMargin
+            height: parent.height
+            spacing: Appearance.spacing.small
             anchors.right: parent.right
 
             Power {}

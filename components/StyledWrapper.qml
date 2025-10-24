@@ -5,12 +5,11 @@ import qs.config
 WrapperRectangle {
     id: root
 
-    // I occasionally misread the two colours as "catLust"
-    property string bg: Colors.catCrust
-    property string fg: Colors.catLavender
+    property string bg: Appearance.colors.crust
+    property string fg: Appearance.colors.lavender
 
     color: root.bg
-    radius: parent.height
+    radius: Appearance.rounding.full
 
     // force everything to be squished
     contentInsideBorder: false
@@ -18,10 +17,10 @@ WrapperRectangle {
     anchors.top: parent.top
     anchors.bottom: parent.bottom
 
-    rightMargin: Config.textPadding
-    leftMargin: Config.textPadding
+    rightMargin: Appearance.padding.larger
+    leftMargin: Appearance.padding.larger
 
-    height: parent.height
+    implicitHeight: parent.implicitHeight
 
     border {
         color: root.fg

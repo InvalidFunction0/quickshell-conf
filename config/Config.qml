@@ -3,9 +3,7 @@ pragma Singleton
 import Quickshell
 
 Singleton {
-    // wow numbers for other things
-    property real barHeight: 35
-    property real barMargin: 10
-
-    property int textPadding: 15
+    readonly property AppearanceConfig appearance: AppearanceConfig {}
+    readonly property NotifsConfig notifs: NotifsConfig {}
+    readonly property BarConfig bar: BarConfig {}
 }

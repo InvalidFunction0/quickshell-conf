@@ -8,11 +8,15 @@ import QtQuick
 Item {
     id: root
 
-    anchors.top: parent.top
-    anchors.bottom: parent.bottom
-    anchors.right: parent.right
+    readonly property int padding: Appearance.padding.large
 
-    implicitWidth: 350
+    anchors {
+        topMargin: Config.bar.sizes.innerHeight + Appearance.padding.normal * 2
+        top: parent.top
+        right: parent.right
+    }
+
+    implicitWidth: Config.notifs.sizes.width + padding * 2
     implicitHeight: {
         const count = Notifs.popups.length;
         if (count === 0) {
@@ -24,8 +28,10 @@ Item {
 
     ClippingWrapperRectangle {
         anchors.fill: parent
-        color: Colors.ctpCrust
-        radius: 10
+        anchors.margins: root.padding
+
+        color: "transparent"
+        radius: Appearance.rounding.normal
 
         ListView {
             model: ScriptModel {
@@ -42,6 +48,16 @@ Item {
                 id: wrapper
 
                 required property Notifs.Notif modelData
+                required property int index
+                property int idx
+
+                onIndexChanged: {
+                    if (index !== -1)
+                        idx = index;
+                }
+
+                implicitWidth: notif.implicitWidth
+                implicitHeight: notif.implicitHeight + (idx === 0 ? 0 : Appearance.spacing.small)
 
                 ListView.onRemove: removeAnim.start()
 
@@ -82,7 +98,10 @@ Item {
                 }
 
                 ClippingRectangle {
+                    anchors.top: parent.top
+
                     color: "transparent"
+                    radius: notif.radius
                     implicitHeight: notif.implicitHeight
                     implicitWidth: notif.implicitWidth
 

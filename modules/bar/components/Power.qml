@@ -6,21 +6,15 @@ import Quickshell.Io
 StyledWrapper {
     id: root
 
-    readonly property var process: Process {
+    readonly property var logoutMenu: Process {
         command: ["sh", "-c", "wlogout"]
     }
 
     // change the colours to the opposite when hovered because why not
-    bg: handler.hovered ? Colors.catSky : Colors.catCrust
-    fg: handler.hovered ? Colors.catCrust : Colors.catSky
+    bg: hover.hovered ? Appearance.colors.sky : Appearance.colors.crust
+    fg: hover.hovered ? Appearance.colors.crust : Appearance.colors.sky
 
-    // reset margins so it's a circle circle and not a long circle
-    rightMargin: 0
-    leftMargin: 0
-
-    width: root.height // make a circle for the power icon to fit in
-
-    child: icon
+    implicitWidth: root.height // make a circle for the power icon to fit in
 
     MaterialIcon {
         id: icon
@@ -31,14 +25,14 @@ StyledWrapper {
     }
 
     HoverHandler {
-        id: handler
+        id: hover
     }
 
     TapHandler {
         onTapped: event => {
             // open the horribly configured wlogout because I can't be bothered
             // to rewrite a logout menu in qs yet because that's effort
-            process.startDetached();
+            logoutMenu.startDetached();
         }
     }
 }

@@ -6,20 +6,17 @@ Text {
 
     // idk man don't ask me
     renderType: Text.NativeRendering
-    // textFormat: Text.PlainText
+    textFormat: Text.PlainText
 
-    font.family: "CaskaydiaCove NF"
-    // boldness is good. be bold. tell your boss he's mean.
-    // you know you want to.
-    // ( I take no responsibility for consequences )
+    font.family: Appearance.fonts.family.base
     font.weight: 700
-    font.pointSize: 13
+    font.pointSize: Appearance.fonts.size.normal
 
     // why do I need to do this to center when I centered it
-    horizontalAlignment: centerText ? Text.AlignHCenter : null
-    verticalAlignment: centerText ? Text.AlignVCenter : null
+    horizontalAlignment: centerText ? Text.AlignHCenter : Text.AlignLeft
+    verticalAlignment: centerText ? Text.AlignVCenter : Text.AlignTop
 
-    color: Colors.catLavender
+    color: Appearance.colors.lavender
 
     Behavior on color {
         CAnim {}

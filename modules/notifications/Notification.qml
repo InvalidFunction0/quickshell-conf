@@ -1,7 +1,8 @@
 pragma ComponentBehavior: Bound
 
-import qs.services
 import qs.components
+import qs.config
+import qs.services
 import Quickshell
 import QtQuick
 
@@ -10,11 +11,11 @@ Rectangle {
 
     required property Notifs.Notif modelData
 
-    implicitWidth: 300
+    implicitWidth: Config.notifs.sizes.width
     implicitHeight: 75
 
     color: "red"
-    radius: 10
+    radius: Appearance.rounding.normal
 
     Component.onCompleted: x = 0
 

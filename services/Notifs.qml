@@ -1,5 +1,6 @@
 pragma Singleton
 
+import qs.config
 import Quickshell
 import Quickshell.Services.Notifications
 import QtQuick
@@ -52,7 +53,7 @@ Singleton {
 
         readonly property Timer timer: Timer {
             running: true
-            interval: 1 * 1000
+            interval: Config.notifs.expireTimeout
             onTriggered: {
                 notif.popup = false;
             }

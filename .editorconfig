@@ -1,2 +1,2 @@
-[.qml]
+[*.qml]
 indent_size = 4

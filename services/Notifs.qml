@@ -1,12 +1,14 @@
 pragma Singleton
 
-import qs.components
 import Quickshell
 import Quickshell.Services.Notifications
 import QtQuick
 
 Singleton {
     id: root
+
+    property list<Notif> list: []
+    readonly property list<Notif> popups: list.filter(n => n.popup)
 
     NotificationServer {
         id: server
@@ -23,8 +25,10 @@ Singleton {
             notif.tracked = true;
 
             const obj = notifComp.createObject(root, {
+                popup: true,
                 notification: notif
             });
+            root.list = [obj, ...root.list];
         }
     }
 
@@ -32,6 +36,7 @@ Singleton {
         id: notif
 
         property Notification notification
+        property bool popup
         property string summary
         property string body
 
@@ -42,7 +47,15 @@ Singleton {
             summary = notification.summary;
             body = notification.body;
 
-            console.log(`${summary} ${body}`);
+            console.log(`${summary}\n${body}`);
+        }
+
+        readonly property Timer timer: Timer {
+            running: true
+            interval: 1 * 1000
+            onTriggered: {
+                notif.popup = false;
+            }
         }
     }
 

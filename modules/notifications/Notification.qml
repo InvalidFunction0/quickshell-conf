@@ -1,36 +1,37 @@
+pragma ComponentBehavior: Bound
+
 import qs.services
+import qs.components
 import Quickshell
-import Quickshell.Widgets
 import QtQuick
 
-Variants {
-    model: Quickshell.screens
+Rectangle {
+    id: root
 
-    PanelWindow {
-        required property ShellScreen modelData
-        screen: modelData
+    required property Notifs.Notif modelData
 
-        anchors {
-            top: true
-            right: true
-        }
-        color: "transparent"
-        implicitHeight: 300
+    implicitWidth: 300
+    implicitHeight: 75
 
-        Item {
-            id: root
+    color: "red"
+    radius: 10
 
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
+    Component.onCompleted: x = 0
 
-            implicitWidth: 200
-            implicitHeight: 1080
+    Behavior on x {
+        Anim {}
+    }
 
-            ClippingWrapperRectangle {
-                anchors.fill: parent
-                color: "red"
-            }
+    Item {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 10
+
+        implicitHeight: 75
+
+        StyledText {
+            text: root.modelData.summary
         }
     }
 }

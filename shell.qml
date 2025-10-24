@@ -1,10 +1,10 @@
 import Quickshell
 import QtQuick
 import qs.modules.bar
-import qs.modules.notifications
+import qs.modules.notifications as Notifs
 import qs.components
 
 ShellRoot {
     Bar {}
-    Notification {}
+    Notifs.Wrapper {}
 }

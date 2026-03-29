@@ -4,6 +4,6 @@ import Quickshell
 
 Singleton {
     readonly property AppearanceConfig appearance: AppearanceConfig {}
-    readonly property NotifsConfig notifs: NotifsConfig {}
+    readonly property NotifConfig notifs: NotifConfig {}
     readonly property BarConfig bar: BarConfig {}
 }

@@ -1,3 +1,4 @@
+import qs.config
 import Quickshell.Io
 
 JsonObject {
@@ -5,8 +6,8 @@ JsonObject {
     property Sizes sizes: Sizes {}
 
     component Sizes: JsonObject {
-        property int width: 400
-        property int image: 41
-        property int badge: 20
+        property int width: 380
+        property int height: 100
+        property int maskPadding: 7
     }
 }

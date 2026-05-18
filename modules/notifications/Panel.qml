@@ -1,7 +1,8 @@
 pragma ComponentBehavior: Bound
 
-// import qs.modules.notifications
+import "."
 import qs.config
+import qs.components
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
@@ -9,113 +10,108 @@ import QtQuick.Layouts
 import QtQuick.Shapes
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Wayland
+import Quickshell.Widgets
 
-PanelWindow {
-    id: root
+Variants {
+    model: Quickshell.screens
 
-    property int cornerHeight: Appearance.rounding.normal
-    property int cornerWidth: cornerHeight
+    // qmllint disable uncreatable-type
+    PanelWindow {
+        // qmllint enable uncreatable-type
+        id: root
 
-    implicitWidth: 480
-    color: "transparent"
-    // Ignore exclusions, like the bar
-    // So that the image doesn't get pushed down by the bar
-    exclusionMode: ExclusionMode.Ignore
-    aboveWindows: true
-    mask: maskRegion
-    HyprlandWindow.visibleMask: maskRegion
-    contentItem.layer.enabled: true
+        property var modelData
+        property int cornerHeight: Appearance.rounding.large
+        property int cornerWidth: cornerHeight
 
-    // Fill the screen for the mask
-    anchors {
-        top: true
-        bottom: true
-        left: true
-        right: true
-    }
+        screen: modelData
 
-    ScriptModel {
-        id: notifModel
-    }
+        implicitWidth: 480
+        color: "transparent"
+        // Ignore exclusions, like the bar
+        // So that the image doesn't get pushed down by the bar
+        exclusionMode: ExclusionMode.Ignore
+        aboveWindows: true
+        mask: maskRegion
+        HyprlandWindow.visibleMask: maskRegion
+        contentItem.layer.enabled: true
+        // To show over fullscreen windows
+        WlrLayershell.layer: WlrLayer.Overlay
 
-    Region {
-        id: maskRegion
-        item: layoutMask
-    }
+        property bool hasFullscreen: Hyprland.monitorFor(modelData).activeWorkspace.hasFullscreen
+        // property bool hasFullscreen: true
 
-    // The image for the background mask
-    // This should be the wallpaper
-    Image {
-        source: "file:///home/ayaan/wallpaper/shaded_landscape.jpg"
-        fillMode: Image.PreserveAspectCrop
-        asynchronous: true
-        retainWhileLoading: true
-        anchors.fill: parent
-    }
+        // Fill the screen for the mask
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
 
-    Item {
-        id: mask
+        ScriptModel {
+            id: notifModel
+            values: Server.popups.filter(n => n.focusedMonitor === Hyprland.monitorFor(root.modelData))
+            // values: Server.popups
+        }
 
-        visible: false
-        layer.enabled: true
-        anchors.fill: parent
+        Region {
+            id: maskRegion
+            item: layoutMask
+        }
 
-        ColumnLayout {
-            id: layoutMask
+        // The image for the background mask
+        // This should be the wallpaper
+        Image {
+            source: "file:///home/ayaan/wallpaper/shaded_landscape.jpg"
+            fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+            retainWhileLoading: true
+            anchors.fill: parent
+        }
 
-            spacing: 0
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: Appearance.padding.normal
-            anchors.bottomMargin: Appearance.padding.normal
+        Item {
+            id: mask
 
-            Shape {
-                id: maskTopRightCorner
-                preferredRendererType: Shape.CurveRenderer
-                asynchronous: true
-                Layout.preferredWidth: root.cornerWidth
-                Layout.preferredHeight: root.cornerHeight
-                Layout.alignment: Qt.AlignRight | Qt.AlignBottom
+            visible: false
+            layer.enabled: true
+            anchors.fill: parent
 
-                ShapePath {
-                    startX: 0
-                    startY: 0
-                    strokeWidth: -1
-
-                    PathArc {
-                        x: root.cornerWidth
-                        y: root.cornerHeight
-                        radiusX: root.cornerWidth
-                        radiusY: root.cornerHeight
-                    }
-
-                    PathLine {
-                        x: root.cornerWidth
-                        y: 0
-                    }
-                }
-
-                transform: Rotation {
-                    origin.x: root.cornerWidth / 2
-                    origin.y: root.cornerHeight / 2
-                    angle: 3 * -90
-                }
-            }
-
-            RowLayout {
-                id: rightColumn
+            ColumnLayout {
+                id: layoutMask
 
                 spacing: 0
-                Layout.alignment: Qt.AlignRight | Qt.AlignBottom
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                // move whole thing right on last notif
+                // anchors.rightMargin: notifList.count > 0 ? Appearance.padding.normal : -Config.notifs.sizes.width - 100
+                anchors.rightMargin: root.hasFullscreen ? 0 : Appearance.padding.normal
+                anchors.bottomMargin: root.hasFullscreen ? 0 : Appearance.padding.normal
 
-                // Bottom left corner
+                Behavior on anchors.rightMargin {
+                    Anim {}
+                }
+
+                Behavior on anchors.bottomMargin {
+                    Anim {}
+                }
+
+                opacity: notifList.count > 0 ? 1 : 0
+
+                Behavior on opacity {
+                    Anim {}
+                }
+
+                readonly property int wantedHeight: 20
+
                 Shape {
-                    id: maskBottomLeftCorner
+                    id: maskTopRightCorner
                     preferredRendererType: Shape.CurveRenderer
                     asynchronous: true
                     Layout.preferredWidth: root.cornerWidth
                     Layout.preferredHeight: root.cornerHeight
-                    Layout.alignment: Qt.AlignRight | Qt.AlignBottom
+                    Layout.alignment: Qt.AlignBottom | Qt.AlignRight
 
                     ShapePath {
                         startX: 0
@@ -142,52 +138,243 @@ PanelWindow {
                     }
                 }
 
-                // Main body
-                Rectangle {
-                    Layout.preferredWidth: Config.notifs.sizes.width + (2 * Config.notifs.sizes.maskPadding)
-                    Layout.preferredHeight: Config.notifs.sizes.height + (2 * Config.notifs.sizes.maskPadding)
-                    topLeftRadius: cornerHeight
+                RowLayout {
+                    id: rightColumn
+
+                    spacing: 0
+                    Layout.alignment: Qt.AlignRight | Qt.AlignBottom
+
+                    // Bottom left corner
+                    Shape {
+                        id: maskBottomLeftCorner
+                        preferredRendererType: Shape.CurveRenderer
+                        asynchronous: true
+                        Layout.preferredWidth: root.cornerWidth
+                        Layout.preferredHeight: root.cornerHeight
+                        Layout.alignment: Qt.AlignBottom | Qt.AlignRight
+
+                        ShapePath {
+                            startX: 0
+                            startY: 0
+                            strokeWidth: -1
+
+                            PathArc {
+                                x: root.cornerWidth
+                                y: root.cornerHeight
+                                radiusX: root.cornerWidth
+                                radiusY: root.cornerHeight
+                            }
+
+                            PathLine {
+                                x: root.cornerWidth
+                                y: 0
+                            }
+                        }
+
+                        transform: Rotation {
+                            origin.x: root.cornerWidth / 2
+                            origin.y: root.cornerHeight / 2
+                            angle: 3 * -90
+                        }
+                    }
+
+                    // Main body
+                    Rectangle {
+                        id: maskBody
+                        implicitWidth: notifList.count > 0 ? Config.notifs.sizes.width + (2 * Config.notifs.sizes.maskPadding) : 0
+                        // implicitHeight: {
+                        //     let len = notifList.count > 0 ? Server.popups.length : 1;
+                        //     let height = Config.notifs.sizes.height * len; // number of notifs
+                        //     height += Appearance.padding.normal * (len - 1); // padding between
+                        //     height += 2 * Config.notifs.sizes.maskPadding;
+                        //     return height > 20 ? height : 0;
+                        // }
+                        implicitHeight: notifRoot.height
+                        topLeftRadius: root.cornerHeight
+
+                        Layout.alignment: Qt.AlignBottom | Qt.AlignRight
+
+                        Behavior on implicitHeight {
+                            Anim {}
+                        }
+
+                        Behavior on implicitWidth {
+                            Anim {
+                                duration: Appearance.anim.durations.large
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
 
-    ColumnLayout {
+        Item {
+            id: notifRoot
 
-        spacing: 0
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: Appearance.padding.normal + Config.notifs.sizes.maskPadding
-        anchors.bottomMargin: Appearance.padding.normal + Config.notifs.sizes.maskPadding
+            // property int pad: Appearance.padding.normal + (root.hasFullscreen ? 0 : Config.notifs.sizes.maskPadding)
+            property int pad: Config.notifs.sizes.maskPadding + (root.hasFullscreen ? 0 : Appearance.padding.normal)
 
-        Rectangle {
-            id: thing
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.rightMargin: pad
+            anchors.bottomMargin: pad
 
-            color: Appearance.colors.mauve
-            opacity: 1
-            clip: true
+            Behavior on anchors.rightMargin {
+                Anim {}
+            }
 
-            radius: root.cornerHeight - 4
+            Behavior on anchors.bottomMargin {
+                Anim {}
+            }
 
             implicitWidth: Config.notifs.sizes.width
-            implicitHeight: Config.notifs.sizes.height
+            // implicitHeight: {
+            //     let h = notifList.count * Config.notifs.sizes.height;
+            //     h += (notifList.count - 1) * Appearance.padding.normal;
+            //     return h;
+            // }
+            implicitHeight: {
+                const count = notifList.count;
+                if (count === 0)
+                    return 0;
 
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                // anchors.fill: thing
-                source: thing
-                blurEnabled: true
-                blur: 0.4
-                blurMax: 12
-                opacity: 0.5
+                let height = (count - 1) * Appearance.padding.normal;
+                height += 2 * Config.notifs.sizes.maskPadding;
+
+                for (let i = 0; i < count; i++)
+                    height += (notifList.itemAtIndex(i) as NotifWrapper)?.nonAnimHeight ?? 0;
+            }
+
+            ListView {
+                id: notifList
+                model: notifModel
+
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                implicitWidth: Config.notifs.sizes.width
+                implicitHeight: contentHeight > 20 ? contentHeight : 0
+
+                Behavior on implicitHeight {
+                    Anim {}
+                }
+
+                spacing: Appearance.padding.normal
+                orientation: Qt.Vertical
+                verticalLayoutDirection: ListView.BottomToTop
+                interactive: false
+
+                displaced: Transition {
+                    Anim {
+                        property: "y"
+                    }
+                }
+
+                move: Transition {
+                    Anim {
+                        property: "y"
+                    }
+                }
+
+                // remove: Transition {
+                //     Anim {
+                //         property: "x"
+                //         to: Config.notifs.sizes.width + 100
+                //         duration: 1200
+                //     }
+                // }
+
+                delegate: NotifWrapper {}
+            }
+        }
+
+        contentItem.layer.effect: MultiEffect {
+            maskEnabled: true
+            maskSource: mask
+            maskSpreadAtMin: 1
+            maskThresholdMin: 0.5
+        }
+    }
+
+    component NotifWrapper: Item {
+        id: wrapper
+
+        required property NotifData modelData
+
+        property int nonAnimHeight: notif.nonAnimHeight
+
+        implicitWidth: notif.width
+        implicitHeight: notif.height
+
+        ListView.onAdd: addAnim.start()
+        ListView.onRemove: removeAnim.start()
+
+        SequentialAnimation {
+            id: addAnim
+            Anim {
+                target: notif
+                property: "x"
+                from: Config.notifs.sizes.width + 200
+                to: 0
+                duration: Appearance.anim.durations.normal
+                easing.bezierCurve: Appearance.anim.curves.emphasized
+            }
+        }
+
+        SequentialAnimation {
+            id: removeAnim
+            PropertyAction {
+                target: wrapper
+                property: "ListView.delayRemove"
+                value: true
+            }
+            PropertyAction {
+                target: wrapper
+                property: "enabled"
+                value: false
+            }
+            PropertyAction {
+                target: wrapper
+                property: "implicitHeight"
+                value: 0
+            }
+            PropertyAction {
+                target: wrapper
+                property: "z"
+                value: 1
+            }
+            Anim {
+                target: notif
+                property: "x"
+                to: Config.notifs.sizes.width + 200
+                duration: Appearance.anim.durations.normal
+                easing.bezierCurve: Appearance.anim.curves.standard
+            }
+            PropertyAction {
+                target: wrapper
+                property: "ListView.delayRemove"
+                value: false
+            }
+        }
+
+        ClippingRectangle {
+            anchors.top: parent.top
+            color: "transparent"
+            radius: notif.radius
+            implicitHeight: notif.implicitHeight
+            implicitWidth: notif.implicitWidth
+
+            Notification {
+                id: notif
+
+                modelData: wrapper.modelData
+                cornerRadius: root.cornerHeight - 4
             }
         }
     }
 
-    contentItem.layer.effect: MultiEffect {
-        maskEnabled: true
-        maskSource: mask
-        maskSpreadAtMin: 1
-        maskThresholdMin: 0.5
+    component Anim: NumberAnimation {
+        duration: Appearance.anim.durations.expressiveDefaultSpatial
+        easing.type: Easing.BezierSpline
+        easing.bezierCurve: Appearance.anim.curves.expressiveDefaultSpatial
     }
 }

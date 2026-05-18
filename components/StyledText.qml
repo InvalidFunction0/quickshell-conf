@@ -16,7 +16,7 @@ Text {
     horizontalAlignment: centerText ? Text.AlignHCenter : Text.AlignLeft
     verticalAlignment: centerText ? Text.AlignVCenter : Text.AlignTop
 
-    color: Appearance.colors.lavender
+    color: Appearance.colors.text
 
     Behavior on color {
         CAnim {}

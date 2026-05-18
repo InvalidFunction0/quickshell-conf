@@ -8,6 +8,6 @@ JsonObject {
     component Sizes: JsonObject {
         property int width: 380
         property int height: 100
-        property int maskPadding: 7
+        property int maskPadding: 10
     }
 }

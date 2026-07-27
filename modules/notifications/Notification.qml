@@ -165,7 +165,7 @@ ClippingRectangle {
 
                 // font.pointSize: Appearance.fonts.size.large
                 font.weight: 600
-                font.family: "Rubik"
+                font.family: "Inter"
 
                 text: root.expanded ? root.modelData.summary : summaryMetrics.elidedText
             }
@@ -179,7 +179,7 @@ ClippingRectangle {
                 elide: Text.ElideRight
                 elideWidth: bodyPreview.width
                 Component.onCompleted: {
-                    console.log(`elided width is ${elideWidth}`);
+                    // console.log(`elided width is ${elideWidth}`);
                 }
             }
 
@@ -194,7 +194,7 @@ ClippingRectangle {
 
                 font.pointSize: Appearance.fonts.size.small
                 font.weight: 500
-                font.family: "Rubik"
+                font.family: "Inter"
                 color: Appearance.colors.subtext0
 
                 opacity: root.expanded ? 0 : 1

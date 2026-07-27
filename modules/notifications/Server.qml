@@ -31,9 +31,9 @@ Singleton {
                 popup: true
             });
 
-            console.log(`Notification from ${notif.appName}:`);
-            console.log(`   ${notif.summary}`);
-            console.log(`   ${notif.body}`);
+            // console.log(`Notification from ${notif.appName}:`);
+            // console.log(`   ${notif.summary}`);
+            // console.log(`   ${notif.body}`);
 
             // prepend the new notif to the notif list
             root.list = [comp, ...root.list];

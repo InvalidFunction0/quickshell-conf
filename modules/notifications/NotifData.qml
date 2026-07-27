@@ -46,6 +46,7 @@ QtObject {
                     invoke: () => a.invoke
                 }));
 
+        // OLD
         // put the chromium link in the summary instead of prepending the body because it annoyed me
         if (notification.appName == "Chromium") {
             // let urlRx = /href="https:\/\/(.*)\/"/; // match the href
@@ -56,5 +57,13 @@ QtObject {
             body = body.replace(/<a.*\/a>/, "");
             body = body.trim();
         }
+
+        // if (notification.appName === "Chromium") {
+        //     let bodyLines = body.split("\n");
+        //     let url = bodyLines[0];
+        //
+        //     body = bodyLines.slice(1).join("\n").trim(); // remove the first line with the url
+        //     summary = `${summary} (${url})`;
+        // }
     }
 }

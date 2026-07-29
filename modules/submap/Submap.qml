@@ -37,10 +37,13 @@ Variants {
         // To show over fullscreen windows
         WlrLayershell.layer: WlrLayer.Overlay
 
-        // property bool hasFullscreen: Hyprland.monitorFor(modelData).activeWorkspace.hasFullscreen
-        property bool hasFullscreen: false
+        property bool hasFullscreen: Hyprland.monitorFor(modelData).activeWorkspace.hasFullscreen
+        // property bool hasFullscreen: false
 
         property string activeSubmap: ""
+        property string lastSubmap: ""
+        readonly property string displaySubmap: activeSubmap !== "" ? activeSubmap : lastSubmap
+        readonly property bool submapVisible: activeSubmap !== ""
 
         Connections {
             target: Hyprland
@@ -48,6 +51,21 @@ Variants {
                 if (e.name === "submap") {
                     root.activeSubmap = e.data;
                 }
+            }
+        }
+
+        onActiveSubmapChanged: {
+            if (activeSubmap !== "") {
+                lastSubmap = activeSubmap;
+            }
+        }
+
+        readonly property int pad: Config.notifs.sizes.maskPadding + (root.hasFullscreen ? 0 : Appearance.padding.normal)
+        property int slideMargin: submapVisible ? pad : -(submapText.implicitWidth + 40)
+
+        Behavior on slideMargin {
+            Anim {
+                duration: Appearance.anim.durations.large
             }
         }
 
@@ -89,18 +107,15 @@ Variants {
                 anchors.left: parent.left
                 // move whole thing right on last notif
                 // anchors.rightMargin: notifList.count > 0 ? Appearance.padding.normal : -Config.notifs.sizes.width - 100
-                anchors.leftMargin: root.hasFullscreen ? 0 : Appearance.padding.normal
+                // anchors.leftMargin: root.hasFullscreen ? 0 : Appearance.padding.normal
+                anchors.leftMargin: root.slideMargin - Config.notifs.sizes.maskPadding
                 anchors.bottomMargin: root.hasFullscreen ? 0 : Appearance.padding.normal
-
-                Behavior on anchors.leftMargin {
-                    Anim {}
-                }
 
                 Behavior on anchors.bottomMargin {
                     Anim {}
                 }
 
-                opacity: submapText.width > 0 ? 1 : 0
+                // opacity: submapText.width > 0 ? 1 : 0
 
                 Behavior on opacity {
                     Anim {}
@@ -150,7 +165,8 @@ Variants {
                     // Main body
                     Rectangle {
                         id: maskBody
-                        implicitWidth: (root.activeSubmap === "" ? 0 : submapText.width) + 2 * Config.notifs.sizes.maskPadding
+                        // implicitWidth: (root.activeSubmap === "" ? 0 : submapText.width) + 2 * Config.notifs.sizes.maskPadding
+                        implicitWidth: (root.displaySubmap === "" ? 0 : submapText.width) + 2 * Config.notifs.sizes.maskPadding
                         implicitHeight: submapText.height + 2 * Config.notifs.sizes.maskPadding
                         topRightRadius: root.cornerHeight
 
@@ -208,13 +224,14 @@ Variants {
             id: submapText
 
             // property int pad: Appearance.padding.normal + (root.hasFullscreen ? 0 : Config.notifs.sizes.maskPadding)
-            property int pad: Config.notifs.sizes.maskPadding + (root.hasFullscreen ? 0 : Appearance.padding.normal)
+            // property int pad: Config.notifs.sizes.maskPadding + (root.hasFullscreen ? 0 : Appearance.padding.normal)
 
             anchors.bottom: parent.bottom
             anchors.left: parent.left
 
-            anchors.leftMargin: (root.activeSubmap === "" ? -100 : pad)
-            anchors.bottomMargin: pad
+            // anchors.leftMargin: (root.activeSubmap === "" ? -100 : pad)
+            anchors.leftMargin: root.slideMargin
+            anchors.bottomMargin: root.pad
 
             radius: root.cornerHeight - Appearance.padding.normal
 
@@ -222,18 +239,18 @@ Variants {
             border.width: 1
             border.color: Appearance.colors.blue
 
-            Behavior on anchors.leftMargin {
-                Anim {
-                    duration: Appearance.anim.durations.large
-                }
-            }
+            // Behavior on anchors.leftMargin {
+            //     Anim {
+            //         duration: Appearance.anim.durations.large
+            //     }
+            // }
 
             implicitWidth: submapName.width > 0 ? submapName.width + 2 * Appearance.padding.normal : 0
             implicitHeight: submapName.height + 2 * Appearance.padding.normal
 
             StyledText {
                 id: submapName
-                text: root.activeSubmap
+                text: root.displaySubmap
                 anchors.centerIn: parent
             }
         }

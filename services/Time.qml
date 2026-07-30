@@ -1,7 +1,7 @@
 pragma Singleton
 
 import Quickshell
-import Quickshell.Io
+// import Quickshell.Io
 import QtQuick
 
 Singleton {
@@ -15,8 +15,6 @@ Singleton {
 
     SystemClock {
         id: clock
-        // I do not know why the tutorial said to use this line.
-        // It does not work.
-        // precision: SystemClock.seconds
+        precision: SystemClock.Seconds
     }
 }

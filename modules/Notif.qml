@@ -8,6 +8,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import qs.services
+import qs.components
 
 PanelWindow {
     id: root
@@ -62,13 +63,7 @@ PanelWindow {
         item: customColumn
     }
 
-    Image {
-        source: "file:///home/ayaan/wallpaper/shaded_landscape.jpg"
-        fillMode: Image.PreserveAspectCrop
-        asynchronous: true
-        retainWhileLoading: true
-        anchors.fill: parent
-    }
+    WallpaperImage {}
 
     Item {
         id: mask

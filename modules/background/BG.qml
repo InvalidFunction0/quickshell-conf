@@ -3,56 +3,57 @@ import Quickshell.Io
 import qs.config
 import QtQuick
 
-Scope {
-    Variants {
-        model: Quickshell.screens
+Variants {
+    model: Quickshell.screens
 
-        PanelWindow {
-            property var modelData
-            screen: modelData
+    // qmllint disable uncreatable-type
+    PanelWindow {
+        // qmllint enable uncreatable-type
 
-            aboveWindows: false
-            color: "transparent"
+        property var modelData
+        screen: modelData
 
-            anchors.top: true
-            anchors.bottom: true
-            anchors.left: true
-            anchors.right: true
+        aboveWindows: false
+        color: "transparent"
 
-            // Image {
-            //     source: "file:///home/ayaan/wallpaper/shaded_landscape.jpg"
-            //     fillMode: Image.PreserveAspectCrop
-            //     asynchronous: true
-            //     retainWhileLoading: true
-            //     anchors.fill: parent
-            // }
+        anchors.top: true
+        anchors.bottom: true
+        anchors.left: true
+        anchors.right: true
 
-            Text {
-                id: timetxt
-                font.pointSize: 100
-                font.bold: true
+        // Image {
+        //     source: "file:///home/ayaan/wallpaper/shaded_landscape.jpg"
+        //     fillMode: Image.PreserveAspectCrop
+        //     asynchronous: true
+        //     retainWhileLoading: true
+        //     anchors.fill: parent
+        // }
 
-                x: parent.width - width - 35
-                y: parent.height - height - 35
+        Text {
+            id: timetxt
+            font.pointSize: 100
+            font.bold: true
 
-                color: Appearance.colors.blue
-                opacity: 0.5
+            x: parent.width - width - 35
+            y: parent.height - height - 35
 
-                Process {
-                    id: dateProc
-                    command: ["date", "+%H:%M"]
-                    running: true
-                    stdout: SplitParser {
-                        onRead: data => timetxt.text = data
-                    }
+            color: Appearance.colors.blue
+            opacity: 0.5
+
+            Process {
+                id: dateProc
+                command: ["date", "+%H:%M"]
+                running: true
+                stdout: SplitParser {
+                    onRead: data => timetxt.text = data
                 }
+            }
 
-                Timer {
-                    interval: 1000
-                    running: true
-                    repeat: true
-                    onTriggered: dateProc.running = true
-                }
+            Timer {
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: dateProc.running = true
             }
         }
     }

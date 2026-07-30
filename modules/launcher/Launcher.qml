@@ -109,7 +109,9 @@ Variants {
             appList.positionViewAtIndex(selectedIndex, ListView.Contain);
         }
 
-        WallpaperImage {}
+        WallpaperImage {
+            id: wallImg
+        }
 
         Region {
             id: maskRegion
@@ -121,6 +123,19 @@ Variants {
             maskSource: mask
             maskSpreadAtMin: 1
             maskThresholdMin: 0.5
+        }
+
+        // this doesn't work
+        MultiEffect {
+            maskEnabled: true
+            maskSource: launcherBg
+            maskSpreadAtMin: 1
+            maskThresholdMin: 0.5
+
+            source: wallImg
+            blurEnabled: true
+            blur: 1.0
+            blurMax: 64
         }
 
         Item {
@@ -234,26 +249,29 @@ Variants {
             implicitWidth: childrenRect.width
 
             ClippingWrapperRectangle {
+                id: launcherBg
                 margin: Appearance.padding.larger
                 color: Qt.alpha(Appearance.colors.crust, 0.5)
                 border.width: 1
                 border.color: Appearance.colors.blue
+                layer.enabled: true
 
                 radius: root.cornerWidth - Config.notifs.sizes.maskPadding
 
                 ColumnLayout {
+                    id: contentLayout
                     spacing: 10
 
                     TextField {
                         id: field
                         // focus: true
 
-                        background: WrapperRectangle {
-                            id: bg
-                            anchors.fill: parent
-                            color: Appearance.colors.red
-                            margin: 10
-                        }
+                        // background: WrapperRectangle {
+                        //     id: bg
+                        //     anchors.fill: parent
+                        //     color: Appearance.colors.red
+                        //     margin: 10
+                        // }
 
                         implicitWidth: 500
 

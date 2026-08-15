@@ -61,15 +61,7 @@ Variants {
             item: layoutMask
         }
 
-        // The image for the background mask
-        // This should be the wallpaper
-        Image {
-            source: "file:///home/ayaan/wallpaper/shaded_landscape.jpg"
-            fillMode: Image.PreserveAspectCrop
-            asynchronous: true
-            retainWhileLoading: true
-            anchors.fill: parent
-        }
+        WallpaperImage {}
 
         Item {
             id: mask

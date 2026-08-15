@@ -18,11 +18,10 @@ Singleton {
     }, extraOpts))
     readonly property list<var> fuzzyPrepped: useFuzzy ? list.map(e => {
         const obj = {
-            _item: e,
-            name: Fuzzy.prepare(e["name"])
+            _item: e
         };
-        // for (const k of keys)
-        //     obj[k] = Fuzzy.prepare(e[k]);
+        for (const k of keys)
+            obj[k] = Fuzzy.prepare(e[k]);
         return obj;
     }) : []
 
@@ -43,7 +42,7 @@ Singleton {
         if (useFuzzy)
             return Fuzzy.go(search, fuzzyPrepped, Object.assign({
                 all: true,
-                keys: ["name"],
+                keys,
                 scoreFn: r => weights.reduce((a, w, i) => a + r[i].score * w, 0)
             }, extraOpts)).map(r => r.obj._item);
 

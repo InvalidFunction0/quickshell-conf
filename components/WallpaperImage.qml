@@ -1,9 +1,18 @@
 import QtQuick
+import Quickshell.Io
 
 Image {
-    source: "file:///home/ayaan/wallpaper/shaded_landscape.jpg"
     fillMode: Image.PreserveAspectCrop
     asynchronous: true
     retainWhileLoading: true
     anchors.fill: parent
+
+    source: wallpaperState.text().trim() ? "file://" + wallpaperState.text().trim() : ""
+
+    FileView {
+        id: wallpaperState
+        path: "/home/ayaan/wallpaper/.wallpaperstate"
+        watchChanges: true
+        onFileChanged: reload()
+    }
 }

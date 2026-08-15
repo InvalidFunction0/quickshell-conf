@@ -37,7 +37,7 @@ Variants {
             x: parent.width - width - 35
             y: parent.height - height - 35
 
-            color: Appearance.colors.blue
+            color: Appearance.colors.base
             opacity: 0.5
 
             Process {

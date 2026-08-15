@@ -125,7 +125,6 @@ Variants {
             maskThresholdMin: 0.5
         }
 
-        // this doesn't work
         MultiEffect {
             maskEnabled: true
             maskSource: launcherBg
@@ -329,7 +328,9 @@ Variants {
 
                         Layout.preferredWidth: parent.width
                         // 11 items for a reason I can't work out
-                        Layout.preferredHeight: Math.min(contentHeight, (12 * exampleHeight.height + 10 + 5))
+                        Layout.preferredHeight: {
+                            Math.min(contentHeight, (12 * (exampleHeight.height + appList.spacing)));
+                        }
 
                         Behavior on Layout.preferredHeight {
                             Anim {}
@@ -362,11 +363,26 @@ Variants {
 
                             required property var modelData
                             required property int index
+                            readonly property bool selected: root.selectedIndex === index
 
-                            color: root.selectedIndex === index ? Appearance.colors.base : Appearance.colors.mantle
+                            color: selected ? Appearance.colors.base : Appearance.colors.mantle
+                            border.color: selected ? Appearance.colors.blue : Appearance.colors.mantle
+                            border.width: selected ? 1 : 0
 
                             Behavior on color {
-                                CAnim {}
+                                CAnim {
+                                    duration: Appearance.anim.durations.small
+                                }
+                            }
+
+                            Behavior on border.color {
+                                CAnim {
+                                    duration: Appearance.anim.durations.small
+                                }
+                            }
+
+                            Behavior on border.width {
+                                Anim {}
                             }
 
                             radius: root.cornerHeight - Config.notifs.sizes.maskPadding - Appearance.padding.normal
